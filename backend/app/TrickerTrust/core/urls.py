@@ -1,4 +1,4 @@
-"""TrickerTrust URL Configuration
+"""TricksterTrust URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.1/topics/http/urls/
@@ -17,13 +17,14 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import include
 
-from TrickerTrust.playground_core import result
-from playground_dev.views import list_urls
+from core.playground_core import result
+from core.playground_core.get_urls import list_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("dev/", include("playground_dev.urls")),
-    path("random/", include("randommethods.urls"))
+    path("random/", include("randommethods.urls")),
+    path("api/v1/currencies/", include("currency_course.urls"))
 ]
 
 result.setup(list_urls(urlpatterns))
