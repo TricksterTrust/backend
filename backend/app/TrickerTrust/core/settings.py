@@ -37,12 +37,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "playground_dev",
-    "currency_course",
-    "randommethods",
-    "rest_framework",
     'corsheaders',
-    "django_celery_beat"
+    "django_celery_beat",
+    "rest_framework",
+    # custom
+    "playground_dev",
+    "currency_course"
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 MIDDLEWARE = [
