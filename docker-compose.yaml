@@ -43,6 +43,7 @@ services:
     environment:
       <<: *x-redis-environment
       <<: *x-postgres-environment
+      SECRET_KEY: ${SECRET_KEY}
     depends_on:
       - database
       - redis
