@@ -23,7 +23,6 @@ from core.playground_core.get_urls import list_urls
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("dev/", include("playground_dev.urls")),
-    path("random/", include("randommethods.urls")),
     path("api/v1/currencies/", include("currency_course.urls"))
 ]
 
