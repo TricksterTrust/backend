@@ -39,7 +39,7 @@ services:
     restart: always
     build: backend
     ports:
-      - "10526:8000"
+      - "${BACKEND_PORT}:8000"
     environment:
       <<: *x-redis-environment
       <<: *x-postgres-environment
