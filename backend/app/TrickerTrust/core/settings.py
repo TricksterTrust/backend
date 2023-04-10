@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'corsheaders',
     "django_celery_beat",
     "rest_framework",
+
     # custom
     "playground_dev",
     "currency_course"

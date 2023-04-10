@@ -1,5 +1,6 @@
 from functools import wraps
 
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 
 
@@ -17,7 +18,10 @@ class Api:
             if method_name not in self.methods:
                 continue
 
-            path: dict = {"path": f"{root_path}{method['name']}", "type": method["type"]}
+            auth = method.get('authorization') or fn.permission_classes
+            isauth = (auth and issubclass(auth[0], IsAuthenticated))
+
+            path: dict = {"path": f"{root_path}{method['name']}", "type": method["type"], "authenticated": isauth}
             self.methods[method_name]["paths"].append(path)
 
     def parameters(self, *params):
