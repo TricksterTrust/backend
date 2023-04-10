@@ -1,5 +1,15 @@
 from typing import Any, Union
 
+class Param:
+    QUERY = "query"
+    BODY = "body"
+    PARAM = "param"
+
+
+class Types:
+    STR = "string"
+    INT = "integer"
+
 
 def required(name: str,
              name_type: str,

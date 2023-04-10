@@ -17,7 +17,8 @@ def list_urls(urlpatterns: list = None, returned: list = None):
 
                 yield returned + [{"name": str(urlconf.pattern),
                                    "type": action_method,
-                                   "function": getattr(urlconf.callback.cls, action)}]
+                                   "function": getattr(urlconf.callback.cls, action),
+                                   "authorization": getattr(urlconf.callback.cls, "permission_classes")}]
         else:
             yield returned + [str(urlconf.pattern)]
 
