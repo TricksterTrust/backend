@@ -2,7 +2,7 @@ class Result:
     CURRENCY_DESCRIPTION: str = "Возвращает список объектов с валютами."
     CURRENCY_OBJECT: dict = {
         "currencies": {"description": "Список с объектами хранящими код, значение, флаг и важность валюты",
-                       "type": "Array[Object[id, value, flag, code, primary]]"}}
+                       "type": "Array[Object[value, flag, code]]"}}
     EXCHANGE_DESCRIPTION: str = "Возвращает объект с переведенным значением"
     EXCHANGE_OBJECT: dict = {"value": {"description": "Объект со значением", "type": "Object[value]"}}
 
