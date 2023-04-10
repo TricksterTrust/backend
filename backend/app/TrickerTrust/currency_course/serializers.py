@@ -6,7 +6,7 @@ from currency_course.models import Currency
 class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
         model = Currency
-        fields = "__all__"
+        fields = ["flag", "value", "code"]
 
 
 class ExchangeSerializer(serializers.Serializer):

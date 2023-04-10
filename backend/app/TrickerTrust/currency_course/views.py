@@ -1,8 +1,5 @@
 from django.db.models import Q
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.decorators import permission_classes
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -20,7 +17,7 @@ class CurrencyViewSet(ViewSet):
         result(description=Result.CURRENCY_DESCRIPTION, objects=Result.CURRENCY_OBJECT, code=200)
     )
     def get_currencies(self, request: Request):
-        currencies = CurrencySerializer(Currency.objects.order_by("primary").all(), many=True)
+        currencies = CurrencySerializer(Currency.objects.order_by("primary", "id").all(), many=True)
         return Response(currencies.data)
 
     @PLAYGROUND_CORE.parameters(
@@ -35,13 +32,11 @@ class CurrencyViewSet(ViewSet):
         currencies = ExchangeSerializer(data=request.data)
         currencies.is_valid(raise_exception=True)
         body = currencies.validated_data
-        currencies = Currency.objects.filter(Q(code=body["to_code"]) | Q(code=body["from_code"]))
-        if currencies.count() != 2 and "RUB" not in body.values():
-            raise ValidationError({"detail": Error.CODE_NOT_FOUND})
-        values = currencies.all().values_list("value", flat=True)
-        if "RUB" in body.values():
-            value = values[0]
-            return Response({"value": value * body["value"]})
+        currencies = Currency.objects.filter(code__in=[body["to_code"], body["from_code"]])
 
-        value = values[0] / values[1]
-        return Response({"value": value * body["value"]})
+        if currencies.count() != 2:
+            raise ValidationError({"detail": Error.CODE_NOT_FOUND})
+
+        values = list(sorted(currencies.values("value", "code"), key=lambda x: x["code"] != body["to_code"]))
+        exchange_rate = values[0]["value"] / values[1]["value"]
+        return Response({"value": exchange_rate * body["value"]})
