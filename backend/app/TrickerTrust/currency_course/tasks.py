@@ -7,7 +7,7 @@ from xml_to_dict import XMLtoDict
 from currency_course.models import Currency
 
 parser = XMLtoDict()
-primary = {"USD": 10, "EUR": 9, "JPY": 7, "CNY": 5, "GBP": 8, "KZT": 6}
+primary = {"USD": 7, "EUR": 6, "JPY": 5, "CNY": 4, "GBP": 3, "KZT": 2}
 flags = {"AUD": "🇦🇺", "AZN": "🇦🇿", "GBP": "🇬🇧",
          "AMD": "🇦🇲", "BYN": "🇧🇾", "BGN": "🇧🇬",
          "BRL": "🇧🇷", "HUF": "🇭🇺", "VND": "🇻🇳",
@@ -28,17 +28,20 @@ flags = {"AUD": "🇦🇺", "AZN": "🇦🇿", "GBP": "🇬🇧",
 def get_currencies_list():
     data = requests.get("https://www.cbr.ru/scripts/XML_daily.asp").text
     currencies = parser.parse(data)
+    now = datetime.datetime.now()
     currencies_insert = [Currency(**{"code": currency["CharCode"],
                                      "value": round(
                                          float(currency["Value"].replace(",", ".")) / int(currency["Nominal"]), 2),
                                      "flag": flags[currency["CharCode"]],
                                      "primary": primary.get(currency["CharCode"], 0),
-                                     "updated_at": datetime.datetime.now()})
+                                     "updated_at": now})
                          for currency in currencies["ValCurs"]["Valute"]]
+    currencies_insert.append(Currency(code="RUB", value=1.00, flag="🇷🇺", primary=8, updated_at=now))
     return currencies_insert
 
 
 @shared_task
 def update_course():
     currencies = get_currencies_list()
-    Currency.objects.bulk_create(currencies, update_conflicts=True, unique_fields=["code"], update_fields=["value", "updated_at"])
+    Currency.objects.bulk_create(currencies, update_conflicts=True, unique_fields=["code"],
+                                 update_fields=["value", "updated_at"])
