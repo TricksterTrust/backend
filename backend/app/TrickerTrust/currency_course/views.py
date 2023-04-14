@@ -24,7 +24,7 @@ class CurrencyViewSet(ViewSet):
         description(text=Description.EXCHANGE_DESCRIPTION),
         required(name="to_code", name_type=Types.STR, param_type=Param.BODY, description=Params.CODE_TO_DESCRIPTION),
         required(name="from_code", name_type=Types.STR, param_type=Param.BODY, description=Params.CODE_FROM_DESC),
-        optional(name="value", name_type=Types.INT, param_type=Param.BODY, description=Params.VALUE_DESCRIPTION,
+        optional(name="value", name_type=Types.FLOAT, param_type=Param.BODY, description=Params.VALUE_DESCRIPTION,
                  warning_description=Params.VALUE_WARNING),
         result(description=Result.EXCHANGE_DESCRIPTION, objects=Result.EXCHANGE_OBJECT, code=200)
     )

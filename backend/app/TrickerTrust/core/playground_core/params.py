@@ -1,5 +1,6 @@
 from typing import Any, Union
 
+
 class Param:
     QUERY = "query"
     BODY = "body"
@@ -7,6 +8,7 @@ class Param:
 
 
 class Types:
+    FLOAT = "float"
     STR = "string"
     INT = "integer"
 
