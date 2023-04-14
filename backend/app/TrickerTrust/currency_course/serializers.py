@@ -12,7 +12,7 @@ class CurrencySerializer(serializers.ModelSerializer):
 class ExchangeSerializer(serializers.Serializer):
     to_code = serializers.CharField(max_length=10)
     from_code = serializers.CharField(max_length=10)
-    value = serializers.IntegerField(max_value=1_000_000, min_value=1, default=1)
+    value = serializers.FloatField(max_value=1_000_000, min_value=1, default=1)
 
 
 
