@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 from os import getenv
 from pathlib import Path
 
@@ -16,7 +17,7 @@ from core.playground_core.main import Api
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -26,11 +27,17 @@ SECRET_KEY = getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if getenv("DEBUG", False) else False
 
+redis_password = getenv("REDIS_PASSWORD")
+redis_host = getenv("REDIS_HOST")
+redis_database = getenv("REDIS_DATABASE")
+redis_url = f"redis://:{redis_password}@{redis_host}/{redis_database}"
+
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -40,10 +47,13 @@ INSTALLED_APPS = [
     'corsheaders',
     "django_celery_beat",
     "rest_framework",
+    "channels",
 
     # custom
     "playground_dev",
-    "currency_course"
+    "currency_course",
+    "promotion",
+    "technical_support"
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 MIDDLEWARE = [
@@ -76,6 +86,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "core.wsgi.application"
 
+ASGI_APPLICATION = "core.asgi.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [redis_url],
+            "symmetric_encryption_keys": [SECRET_KEY],
+        },
+    },
+}
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -107,7 +128,6 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -134,3 +154,5 @@ PLAYGROUND_CORE = Api()
 CELERY_TIMEZONE = "Europe/Moscow"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_BROKER_URL = redis_url
+CELERY_RESULT_BACKEND = redis_url
