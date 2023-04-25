@@ -21,9 +21,10 @@ from core.playground_core import result
 from core.playground_core.get_urls import list_urls
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("dev/", include("playground_dev.urls")),
-    path("api/v1/currencies/", include("currency_course.urls"))
+    path("v1/admin/", admin.site.urls),
+    path("v1/dev/", include("playground_dev.urls")),
+    path("v1/currencies/", include("currency_course.urls")),
+    path("v1/promotion/", include("promotion.urls"))
 ]
 
 result.setup(list_urls(urlpatterns))
