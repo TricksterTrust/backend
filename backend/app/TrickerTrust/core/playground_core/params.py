@@ -8,9 +8,11 @@ class Param:
 
 
 class Types:
+    BOOL = "boolean"
     FLOAT = "float"
     STR = "string"
     INT = "integer"
+    DATETIME = "datetime"
 
 
 def required(name: str,
