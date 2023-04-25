@@ -19,8 +19,12 @@ class Api:
                 continue
 
             auth = method.get('authorization') or fn.permission_classes
-            isauth = (auth and issubclass(auth[0], IsAuthenticated))
 
+            isauth = (auth and (
+                    issubclass(auth[0], IsAuthenticated) or
+                    (hasattr(auth[0], "DANGER_METHODS") and (method["type"] in auth[0].DANGER_METHODS))
+            )
+                      )
             path: dict = {"path": f"{root_path}{method['name']}", "type": method["type"], "authenticated": isauth}
             self.methods[method_name]["paths"].append(path)
 
